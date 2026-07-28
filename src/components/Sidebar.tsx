@@ -73,10 +73,10 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      <button className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">
+      {/* <button className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/5 hover:text-white">
         <LogOut className="h-4 w-4" strokeWidth={2} />
         Logout
-      </button>
+      </button> */}
     </aside>
   );
 }

@@ -15,7 +15,8 @@ export default function Topbar({ title }: { title: string }) {
         </button>
         <div className="h-9 w-9 overflow-hidden rounded-full bg-slate-200">
           <Image
-            src="https://i.pravatar.cc/72?img=32"
+            // src="https://i.pravatar.cc/72?img=32"
+            src=""
             alt="User avatar"
             width={36}
             height={36}
