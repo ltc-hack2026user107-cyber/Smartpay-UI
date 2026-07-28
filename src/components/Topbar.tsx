@@ -1,5 +1,4 @@
 import { Bell } from "lucide-react";
-import Image from "next/image";
 
 export default function Topbar({ title }: { title: string }) {
   return (
@@ -13,15 +12,9 @@ export default function Topbar({ title }: { title: string }) {
         >
           <Bell className="h-4 w-4 text-slate-500" strokeWidth={2} />
         </button>
-        <div className="h-9 w-9 overflow-hidden rounded-full bg-slate-200">
-          <Image
-            // src="https://i.pravatar.cc/72?img=32"
-            src=""
-            alt="User avatar"
-            width={36}
-            height={36}
-            className="h-full w-full object-cover"
-          />
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-slate-500 text-lg">
+          <span aria-hidden="true">👤</span>
+          <span className="sr-only">User profile</span>
         </div>
       </div>
     </header>
