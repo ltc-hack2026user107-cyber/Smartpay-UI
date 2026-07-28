@@ -66,41 +66,45 @@ export default function OrderDetailsModal({
           </div>
         </dl>
 
-        <p className="mb-3 text-sm font-semibold text-slate-900">
-          Order Timeline
-        </p>
-        <ul className="space-y-4">
-          {order.timeline.map((step, i) => (
-            <li key={step.label} className="flex gap-3">
-              <div className="flex flex-col items-center">
-                {step.state === "done" ? (
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" strokeWidth={2.5} />
-                ) : step.state === "current" ? (
-                  <span className="flex h-4 w-4 items-center justify-center">
-                    <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
-                  </span>
-                ) : (
-                  <Circle className="h-4 w-4 text-slate-300" strokeWidth={2} />
-                )}
-                {i < order.timeline.length - 1 && (
-                  <span className="mt-1 h-6 w-px bg-slate-200" />
-                )}
-              </div>
-              <div>
-                <p
-                  className={`text-sm font-medium ${
-                    step.state === "pending" ? "text-slate-400" : "text-slate-900"
-                  }`}
-                >
-                  {step.label}
-                </p>
-                <p className="text-xs text-slate-400">
-                  {step.timestamp ?? "Pending"}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {order.timeline.length > 0 && (
+          <>
+            <p className="mb-3 text-sm font-semibold text-slate-900">
+              Order Timeline
+            </p>
+            <ul className="space-y-4">
+              {order.timeline.map((step, i) => (
+                <li key={step.label} className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    {step.state === "done" ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" strokeWidth={2.5} />
+                    ) : step.state === "current" ? (
+                      <span className="flex h-4 w-4 items-center justify-center">
+                        <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+                      </span>
+                    ) : (
+                      <Circle className="h-4 w-4 text-slate-300" strokeWidth={2} />
+                    )}
+                    {i < order.timeline.length - 1 && (
+                      <span className="mt-1 h-6 w-px bg-slate-200" />
+                    )}
+                  </div>
+                  <div>
+                    <p
+                      className={`text-sm font-medium ${
+                        step.state === "pending" ? "text-slate-400" : "text-slate-900"
+                      }`}
+                    >
+                      {step.label}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {step.timestamp ?? "Pending"}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );

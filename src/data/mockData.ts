@@ -234,4 +234,4 @@ export const LEDGER_ENTRIES: LedgerEntry[] = [
   { txnHash: "0x33bd...g977", orderId: "SP1001", event: "Settlement Released", timestamp: "22 Jul 2026, 04:21 PM", block: "#554327" },
 ];
 
-export const SELLERS = ["ABC Manufacturing", "BuildWell Ltd.", "Mega Supplies", "TechParts", "InfraBuild"];
+export const SELLERS = ["BuildWell Ltd."];

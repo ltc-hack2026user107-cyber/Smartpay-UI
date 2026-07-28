@@ -4,21 +4,97 @@ import { useState } from "react";
 import AppShell from "@/components/AppShell";
 import { Lock, ChevronDown, Calendar } from "lucide-react";
 import { SELLERS } from "@/data/mockData";
+import { API_BASE_URL } from "@/lib/api";
 import { formatGBP } from "@/lib/format";
 
 export default function CreateOrderPage() {
+  const today = new Date().toISOString().split("T")[0];
   const [seller, setSeller] = useState(SELLERS[0]);
-  const [description, setDescription] = useState("Steel Pipes - High Grade");
-  const [amount, setAmount] = useState(100000);
-  const [deliveryDate, setDeliveryDate] = useState("2026-07-30");
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState<number | "">("");
+  const [deliveryDate, setDeliveryDate] = useState(today);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    alert(`Order created for ${formatGBP(amount)} with ${seller}.`);
+    setFeedback(null);
+
+    const trimmedDescription = description.trim();
+    const trimmedAmount = Number(amount);
+    const trimmedDeliveryDate = deliveryDate?.trim() || "";
+    const selectedDate = new Date(trimmedDeliveryDate);
+    const todayDate = new Date(today);
+
+    if (!seller || !trimmedDescription || !trimmedAmount || !trimmedDeliveryDate || selectedDate < todayDate) {
+      setFeedback({
+        type: "error",
+        message: "Please fill in all fields before creating the order.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const payload = {
+      _id: `SP${Date.now().toString().slice(-6)}`,
+      buyer: {
+        id: "buyer_001",
+        name: "Lloyds Procurement",
+      },
+      seller: {
+        id: "seller_001",
+        name: seller,
+      },
+      description: trimmedDescription,
+      amount: trimmedAmount,
+      currency: "GBP",
+      deliveryDate: trimmedDeliveryDate,
+      orderStatus: "IN_TRANSIT",
+      escrow: {
+        status: "LOCKED",
+        lockedAmount: Number(amount),
+        lockedDate: new Date().toISOString(),
+      },
+      timeline: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const responseData = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(responseData?.message || "Failed to create order");
+      }
+
+      setFeedback({
+        type: "success",
+        message: responseData?.message || "Order created successfully",
+      });
+    } catch (error) {
+      setFeedback({
+        type: "error",
+        message: error instanceof Error ? error.message : "Unable to create order",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <AppShell title="2. Create Order">
+    <AppShell title="Create Order">
       <div className="max-w-xl rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-base font-semibold text-slate-900">
           Create New Order
@@ -81,6 +157,7 @@ export default function CreateOrderPage() {
               <div className="relative flex items-center rounded-lg border border-slate-200 px-3 py-2.5">
                 <input
                   type="date"
+                  min={today}
                   value={deliveryDate}
                   onChange={(e) => setDeliveryDate(e.target.value)}
                   className="w-full text-sm text-slate-900 outline-none [color-scheme:light]"
@@ -94,7 +171,7 @@ export default function CreateOrderPage() {
             <div>
               <p className="text-sm text-indigo-500">You will pay</p>
               <p className="text-xl font-semibold text-slate-900">
-                {formatGBP(amount)}
+                {formatGBP(typeof amount === "number" ? amount : 0)}
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Amount will be locked in Escrow
@@ -103,11 +180,24 @@ export default function CreateOrderPage() {
             <Lock className="h-5 w-5 text-indigo-500" strokeWidth={2} />
           </div>
 
+          {feedback ? (
+            <div
+              className={`rounded-lg border px-3 py-2 text-sm ${
+                feedback.type === "success"
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : "border-rose-200 bg-rose-50 text-rose-700"
+              }`}
+            >
+              {feedback.message}
+            </div>
+          ) : null}
+
           <button
             type="submit"
-            className="w-full rounded-lg bg-sidebar-active py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-sidebar-active py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Create Order
+            {isSubmitting ? "Creating Order..." : "Create Order"}
           </button>
         </form>
       </div>

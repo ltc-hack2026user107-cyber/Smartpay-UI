@@ -1,13 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
-import Badge from "@/components/Badge";
-import { BUYER_ACCOUNTS, SELLER_ACCOUNTS } from "@/data/mockData";
 import { formatGBP } from "@/lib/format";
+import { API_BASE_URL } from "@/lib/api";
+
+interface BuyerAccountItem {
+  id: string;
+  name: string;
+  role: string;
+  balance: number;
+  totalOrders: number;
+}
+
+interface SellerAccountItem {
+  id: string;
+  name: string;
+  totalOrders: number;
+  balance: number;
+}
 
 export default function AdminAccountsPage() {
   const [tab, setTab] = useState<"Buyers" | "Sellers">("Buyers");
+  const [buyers, setBuyers] = useState<BuyerAccountItem[]>([]);
+  const [sellers, setSellers] = useState<SellerAccountItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const [buyersResponse, sellersResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/admin/buyers`),
+          fetch(`${API_BASE_URL}/admin/sellers`),
+        ]);
+
+        if (!buyersResponse.ok || !sellersResponse.ok) {
+          throw new Error("Failed to fetch accounts");
+        }
+
+        const buyersData: BuyerAccountItem[] = await buyersResponse.json();
+        const sellersData: SellerAccountItem[] = await sellersResponse.json();
+
+        setBuyers(buyersData);
+        setSellers(sellersData);
+      } catch (error) {
+        console.error("Admin accounts fetch failed", error);
+        setBuyers([]);
+        setSellers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
 
   return (
     <AppShell title="10. Accounts">
@@ -35,25 +81,33 @@ export default function AdminAccountsPage() {
                 <tr className="text-xs text-slate-400">
                   <th className="pb-3 font-medium">Buyer ID</th>
                   <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Wallet Balance</th>
-                  <th className="pb-3 font-medium">Escrow Balance</th>
+                  <th className="pb-3 font-medium">Balance</th>
                   <th className="pb-3 font-medium">Total Orders</th>
-                  <th className="pb-3 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {BUYER_ACCOUNTS.map((b) => (
-                  <tr key={b.id}>
-                    <td className="py-3 font-medium text-sidebar-active">{b.id}</td>
-                    <td className="py-3 text-slate-700">{b.name}</td>
-                    <td className="py-3 text-slate-700">{formatGBP(b.walletBalance)}</td>
-                    <td className="py-3 text-slate-700">{formatGBP(b.escrowBalance)}</td>
-                    <td className="py-3 text-slate-700">{b.totalOrders}</td>
-                    <td className="py-3">
-                      <Badge status={b.status} />
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="py-6 text-center text-slate-500">
+                      Loading buyers...
                     </td>
                   </tr>
-                ))}
+                ) : buyers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-6 text-center text-slate-500">
+                      No buyers found.
+                    </td>
+                  </tr>
+                ) : (
+                  buyers.map((buyer) => (
+                    <tr key={buyer.id}>
+                      <td className="py-3 font-medium text-sidebar-active">{buyer.id}</td>
+                      <td className="py-3 text-slate-700">{buyer.name}</td>
+                      <td className="py-3 text-slate-700">{formatGBP(buyer.balance)}</td>
+                      <td className="py-3 text-slate-700">{buyer.totalOrders}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -64,27 +118,33 @@ export default function AdminAccountsPage() {
                 <tr className="text-xs text-slate-400">
                   <th className="pb-3 font-medium">Seller ID</th>
                   <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Wallet Balance</th>
-                  <th className="pb-3 font-medium">Escrow Balance</th>
+                  <th className="pb-3 font-medium">Balance</th>
                   <th className="pb-3 font-medium">Total Orders</th>
-                  <th className="pb-3 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {SELLER_ACCOUNTS.map((s) => (
-                  <tr key={s.id}>
-                    <td className="py-3 font-medium text-sidebar-active">{s.id}</td>
-                    <td className="py-3 text-slate-700">{s.name}</td>
-                    <td className="py-3 text-slate-700">{formatGBP(s.walletBalance)}</td>
-                    <td className="py-3 text-slate-700">
-                      {s.escrowBalance === null ? "-" : formatGBP(s.escrowBalance)}
-                    </td>
-                    <td className="py-3 text-slate-700">{s.totalOrders}</td>
-                    <td className="py-3">
-                      <Badge status={s.status} />
+                {loading ? (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-slate-500">
+                      Loading sellers...
                     </td>
                   </tr>
-                ))}
+                ) : sellers.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-slate-500">
+                      No sellers found.
+                    </td>
+                  </tr>
+                ) : (
+                  sellers.map((seller) => (
+                    <tr key={seller.id}>
+                      <td className="py-3 font-medium text-sidebar-active">{seller.id}</td>
+                      <td className="py-3 text-slate-700">{seller.name}</td>
+                      <td className="py-3 text-slate-700">{formatGBP(seller.balance)}</td>
+                      <td className="py-3 text-slate-700">{seller.totalOrders}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

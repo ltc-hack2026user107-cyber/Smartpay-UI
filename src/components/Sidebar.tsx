@@ -25,7 +25,7 @@ const NAV_ITEMS: Record<Role, { label: string; href: string; icon: typeof Layout
   ],
   seller: [
     { label: "Dashboard", href: "/seller/dashboard", icon: LayoutDashboard },
-    { label: "Seller", href: "/seller/orders", icon: Store },
+    { label: "Orders", href: "/seller/orders", icon: Store },
   ],
   admin: [
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
