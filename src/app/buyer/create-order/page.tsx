@@ -44,10 +44,13 @@ export default function CreateOrderPage() {
       buyer: {
         id: "buyer_001",
         name: "Lloyds Procurement",
+        gculAccountId:"1:USR:GBP:425KTfXouwvpG6xrSHDujeEtugeToCBneYUP126PJpZed"
+
       },
       seller: {
         id: "seller_001",
         name: seller,
+        gculAccountId:"1:USR:GBP:425i82CWn2xjPuJiLTgxS9h1sdwfXHkHnYsoLdgKBBZ0f"
       },
       description: trimmedDescription,
       amount: trimmedAmount,
