@@ -1,9 +1,26 @@
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 
-export default function Topbar({ title }: { title: string }) {
+export default function Topbar({
+  title,
+  onMenuClick,
+}: {
+  title: string;
+  onMenuClick?: () => void;
+}) {
   return (
-    <header className="flex items-center justify-between px-8 py-6">
-      <h1 className="text-lg font-semibold text-indigo-600">{title}</h1>
+    <header className="flex items-center justify-between px-4 sm:px-8 py-6">
+      <div className="flex items-center gap-3">
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 md:hidden"
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
+        <h1 className="text-lg font-semibold text-indigo-600">{title}</h1>
+      </div>
 
       <div className="flex items-center gap-4">
         <button
