@@ -134,7 +134,6 @@ export default function BuyerOrdersPage() {
                 <th className="pb-3 font-medium">Description</th>
                 <th className="pb-3 font-medium">Status</th>
                 <th className="pb-3 font-medium">Amount</th>
-                <th className="pb-3 font-medium">Escrow</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -169,9 +168,9 @@ export default function BuyerOrdersPage() {
                     <td className="py-3 font-medium text-slate-900">
                       {formatGBP(order.amount)}
                     </td>
-                    <td className="py-3">
+                    {/* <td className="py-3">
                       <Badge status={order.escrowStatus} />
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}
