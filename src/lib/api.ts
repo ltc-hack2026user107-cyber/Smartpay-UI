@@ -1,1 +1,1 @@
-export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
+export const API_BASE_URL = "https://smartpay-service-965836572202.asia-south1.run.app";
