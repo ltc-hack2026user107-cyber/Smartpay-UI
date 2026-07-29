@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { RoleProvider } from "@/context/RoleContext";
+import { ApiLoaderProvider } from "@/context/ApiLoaderContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <RoleProvider>{children}</RoleProvider>
+        <RoleProvider>
+          <ApiLoaderProvider>{children}</ApiLoaderProvider>
+        </RoleProvider>
       </body>
     </html>
   );
