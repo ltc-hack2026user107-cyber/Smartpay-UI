@@ -91,12 +91,12 @@ export default function AdminDashboardPage() {
       </h2>
       <div className="mb-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         {(loading ? topStatsConfig : topStats).map((stat) => (
-          <StatCard key={stat.label} {...stat} value={loading ? "--" : stat.value} />
+          <StatCard key={stat.label} {...stat} value={loading ? "--" : (stat as any).value} />
         ))}
       </div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {(loading ? bottomStatsConfig : bottomStats).map((stat) => (
-          <StatCard key={stat.label} {...stat} value={loading ? "--" : stat.value} />
+          <StatCard key={stat.label} {...stat} value={loading ? "--" : (stat as any).value} />
         ))}
       </div>
     </AppShell>
