@@ -79,8 +79,8 @@ export default function LedgerExplorerPage() {
               <tr className="text-xs text-slate-400">
                 <th className="pb-3 font-medium">Order ID</th>
                 <th className="pb-3 font-medium">Event</th>
-                <th className="pb-3 font-medium">Buyer Hash</th>
-                <th className="pb-3 font-medium">Seller Hash</th>
+                <th className="pb-3 font-medium">Buyer Gcul-Id</th>
+                <th className="pb-3 font-medium">Seller Gcul-Id</th>
                 <th className="pb-3 font-medium">Amount</th>
               </tr>
             </thead>
