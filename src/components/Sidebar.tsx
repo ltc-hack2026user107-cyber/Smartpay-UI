@@ -10,6 +10,7 @@ import {
   BookOpen,
   Store,
   LogOut,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,19 +36,40 @@ const NAV_ITEMS: Record<Role, { label: string; href: string; icon: typeof Layout
   ],
 };
 
-export default function Sidebar() {
+export default function Sidebar({
+  isOpen,
+  onClose,
+}: {
+  isOpen?: boolean;
+  onClose?: () => void;
+}) {
   const { role } = useRole();
   const pathname = usePathname();
   const items = NAV_ITEMS[role];
 
   return (
-    <aside className="flex h-screen w-64 flex-shrink-0 flex-col justify-between bg-sidebar px-4 py-6">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 flex h-screen w-64 flex-shrink-0 flex-col justify-between bg-sidebar px-4 py-6 transition-transform duration-300 ease-in-out md:sticky md:top-0 md:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full md:flex"
+      }`}
+    >
       <div>
-        <div className="mb-6 flex items-center gap-2 px-2">
-          <ShieldCheck className="h-6 w-6 text-white" strokeWidth={2} />
-          <span className="text-lg font-semibold tracking-wide text-white">
-            SMARTPAY
-          </span>
+        <div className="mb-6 flex items-center justify-between px-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-6 w-6 text-white" strokeWidth={2} />
+            <span className="text-lg font-semibold tracking-wide text-white">
+              SMARTPAY
+            </span>
+          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="rounded-lg p-1 text-slate-400 hover:bg-white/5 hover:text-white md:hidden"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
 
         <RoleSwitcher />
